@@ -1,6 +1,6 @@
 # YChaCha - Tiny Extended Nonce Version of XChaCha20
 
-YChaCha is a stream cipher based on XChaCha20. YChaCha uses a 256-bit key and a 256-bit nonce. According to an [IETF draft:](https://tools.ietf.org/html/draft-arciszewski-xchacha-02),
+YChaCha is a stream cipher based on XChaCha20. YChaCha uses a 256-bit key and a 256-bit nonce. According to an [IETF draft](https://tools.ietf.org/html/draft-arciszewski-xchacha-02),
 
 > The eXtended-nonce ChaCha cipher construction (XChaCha) allows for ChaCha-based ciphersuites to accept a 192-bit nonce with similar
 > guarantees to the original construction, except with a much lower probability of nonce misuse occurring. This enables XChaCha
