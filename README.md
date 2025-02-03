@@ -8,6 +8,8 @@ YChaCha is a stream cipher based on XChaCha20. YChaCha uses a 256-bit key and a 
 
 The small [XChaCha20](https://github.com/spcnvdr/xchacha20) library was not small enough, so I re-factored it for minimum footprint. The target processor is 32-bit such as RISC V or Arm Cortex. Giving the code a little-endian dependency simplified it. The key and the IV are both 256-bit. It is backward-compatible with XChaCha20 if the last 64 bits of IV are 0. XChaCha20 is the same as YChaCha if the last 64 bits of the 256-bit IV are set using `xchacha_set_counter`.
 
+YChaCha is immune to power analysis side-channel attacks, unlike AES. Since some industries mandate AES (FIPS-140), the 256-bit IV can be shared with AES-CBC (or AES-GCM) for a kind of belt-and-suspenders double-encryption scheme.
+
 XChaCha20's block dependency prevented small chunks of keystream from being used without calling `xchacha_keysetup` before each `xchacha_encrypt_bytes`.
 This restriction is removed with YChaCha.
 
