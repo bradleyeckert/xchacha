@@ -13,7 +13,7 @@ YChaCha is (supposedly) immune to power analysis side-channel attacks, unlike AE
 XChaCha20's block dependency prevented small chunks of keystream from being used without calling `xchacha_keysetup` before each `xchacha_encrypt_bytes`.
 This restriction is removed with YChaCha.
 
-A larger context structure is used to integrate SipHash keyed HMAC and communication FIFOs into the library.
+A larger context structure is used to integrate SipHash keyed HMAC and communication buffers into the library.
 
 **More Information**
 
