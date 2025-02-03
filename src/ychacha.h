@@ -56,49 +56,11 @@
 typedef struct
 {	uint32_t input[16];		// xchacha state
     uint64_t hkey[2];		// siphash key (increment after each message)
-    uint8_t sipbuf[8];      // siphash buffer
     uint8_t chabuf[64];     // xchacha keystream buffer
     uint8_t chaptr;         // xchacha keystream pointer
-    uint8_t sipptr;         // siphash pointer
-	uint8_t ready;          // buf is ready to process
-	uint16_t tail;
-	uint16_t head;
+	uint16_t p;             // number of bytes in buf
 	uint8_t buf[YCH_BUFSIZE];
 } YChaCha_ctx;
-
-/* ------------------------------------------------------------------------- */
-
-/** Clear the communication buffer
- * @param ctx The XChaCha context to use
- */
-void xcClearBuffer(YChaCha_ctx *ctx);
-
-/** Send a byte to the communication buffer
- * @param ctx The XChaCha context to use
- * @param c Byte to append to the buffer
- */
-void xcPutch(YChaCha_ctx *ctx, uint8_t c);
-
-/** Get a byte from the communication buffer
- * @param ctx The XChaCha context to use
- * @return next byte
- */
-uint8_t xcGetch(YChaCha_ctx *ctx);
-
-/** Send a byte array to the communication buffer
- * @param ctx The XChaCha context to use
- * @param src Byte array to send
- * @param len Length in bytes
- */
-void xcPutsm(YChaCha_ctx *ctx, uint8_t *src, uint8_t len);
-
-/** Encrypt a byte array to the communication buffer
- * @param ctx The XChaCha context to use
- * @param src Byte array to send
- * @param len Length in bytes
- */
-void xcPuts(YChaCha_ctx *ctx, uint8_t *src, uint8_t len);
-
 
 /* ------------------------------------------------------------------------- */
 
@@ -160,6 +122,17 @@ void ychacha_encrypt_bytes(YChaCha_ctx* ctx, const uint8_t* plaintext,
 void ychacha_decrypt_bytes(YChaCha_ctx* ctx, const uint8_t* ciphertext,
     uint8_t* plaintext,
     uint32_t msglen);
+
+
+/** Calculate HMAC with SipHash 2.4
+ * @param src Input byte array
+ * @param src_sz Input length
+ * @param key 16-byte key
+ * @return 64-bit hash
+ */
+uint64_t siphash24(const uint8_t *src, unsigned long src_sz, const uint8_t key[16]);
+
+/* ------------------------------------------------------------------------- */
 
 
 #endif // _YCHACHA_H_
