@@ -6,10 +6,12 @@ YChaCha is a stream cipher based on XChaCha20. YChaCha uses a 256-bit key and a 
 > guarantees to the original construction, except with a much lower probability of nonce misuse occurring. This enables XChaCha
 > constructions to be stateless, while retaining the same security assumptions as ChaCha.
 
-The small [XChaCha20](https://github.com/spcnvdr/xchacha20) library was not small enough, so I re-factored it for minimum footprint. The target processor is 32-bit such as RISC V or Arm Cortex. Giving the code a little-endian dependency simplified it. The key and the IV are both 256-bit. It is backward-compatible with XChaCha20 if the last 64 bits of IV are 0.
+The small [XChaCha20](https://github.com/spcnvdr/xchacha20) library was not small enough, so I re-factored it for minimum footprint. The target processor is 32-bit such as RISC V or Arm Cortex. Giving the code a little-endian dependency simplified it. The key and the IV are both 256-bit. It is backward-compatible with XChaCha20 if the last 64 bits of IV are 0. XChaCha20 is the same as YChaCha if the last 64 bits of the 256-bit IV are set using `xchacha_set_counter`.
 
 XChaCha20's block dependency prevented small chunks of keystream from being used without calling `xchacha_keysetup` before each `xchacha_encrypt_bytes`.
 This restriction is removed with YChaCha.
+
+A larger context structure is used to integrate SipHash keyed HMAC and communication FIFOs into the library.
 
 **More Information**
 
@@ -62,7 +64,7 @@ Then use xchacha_encrypt_bytes or xchacha_encrypt_blocks to encrypt data
 In the src folder is a program named test.c It calculates and compares
 XChaCha20 test vectors obtained from two different sources. The test vectors
 were borrowed from the IETF draft regarding XChaCha20 and an example from
-Crypto++ wikipedia. It will compare the output of this XChaCha20 library with
+Crypto++ wikipedia. It will compare the output of this YChaCha library with
 known good test vectors to ensure this library is working correctly.
 
 To make the test program simply run make

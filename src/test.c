@@ -23,7 +23,7 @@
  *
  */
 int check_second_ietf(void){
-    XChaCha_ctx ctx;
+    YChaCha_ctx ctx;
     uint8_t *buffer;
     uint8_t counter[8] = {0x1};
 
@@ -130,12 +130,12 @@ int check_second_ietf(void){
         return(-1);
     }
 
-    xchacha_keysetup(&ctx, key, iv);
+    ychacha_keysetup(&ctx, key, iv);
 
     /*This version of the IETF draft initializes their counter to 1
     * instead of 0 */
-    xchacha_set_counter(&ctx, counter);
-    xchacha_encrypt_bytes(&ctx, plaintext, buffer, 304);
+    ychacha_set_counter(&ctx, counter);
+    ychacha_encrypt_bytes(&ctx, plaintext, buffer, 304);
 
     /* Make sure our ciphertext matches */
     if(memcmp(buffer, correct_ciphertext, 304) != 0){
@@ -158,7 +158,7 @@ int check_second_ietf(void){
  *
  */
 int check_ietf(void){
-    XChaCha_ctx ctx;
+    YChaCha_ctx ctx;
     uint8_t *buffer;
 
     /* Test vectors from IETF XChaCha20 draft */
@@ -264,8 +264,8 @@ int check_ietf(void){
         return(-1);
     }
 
-    xchacha_keysetup(&ctx, key, iv);
-    xchacha_encrypt_bytes(&ctx, plaintext, buffer, 304);
+    ychacha_keysetup(&ctx, key, iv);
+    ychacha_encrypt_bytes(&ctx, plaintext, buffer, 304);
 
     /* Make sure our ciphertext matches */
     if(memcmp(buffer, correct_ciphertext, 304) != 0){
@@ -288,7 +288,7 @@ int check_ietf(void){
  *
  */
 int check_cpp(void){
-    XChaCha_ctx ctx;
+    YChaCha_ctx ctx;
     uint8_t *buffer;
     uint8_t counter[8] = {0x1};
 
@@ -324,11 +324,11 @@ int check_cpp(void){
         return(-1);
     }
 
-    xchacha_keysetup(&ctx, key, iv);
+    ychacha_keysetup(&ctx, key, iv);
 
     /* Crypto++ initializes their counter to 1 instead of 0 */
-    xchacha_set_counter(&ctx, counter);
-    xchacha_encrypt_bytes(&ctx, plaintext, buffer, msglen);
+    ychacha_set_counter(&ctx, counter);
+    ychacha_encrypt_bytes(&ctx, plaintext, buffer, msglen);
 
     /* Compare our ciphertext to the correct ciphertext */
     if(memcmp(buffer, correct_ciphertext, msglen) != 0){

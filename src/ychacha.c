@@ -48,7 +48,7 @@ static void u32tou8(uint8_t *p, uint32_t v) {
  * @param k The key to use with hchacha
  *
  */
-void xchacha_hchacha20(uint8_t *out, const uint8_t *in, const uint8_t *k){
+void ychacha_hchacha20(uint8_t *out, const uint8_t *in, const uint8_t *k){
     int i;
     uint32_t x[16];
 
@@ -76,11 +76,11 @@ void xchacha_hchacha20(uint8_t *out, const uint8_t *in, const uint8_t *k){
  * @note Key and IV sizes are 256 bits. For backward compatibility with
  *       192-bit IV, set the last 8 bytes to 0.
  */
-void xchacha_keysetup(XChaCha_ctx *ctx, const uint8_t *k, uint8_t *iv){
+void ychacha_keysetup(YChaCha_ctx *ctx, const uint8_t *k, uint8_t *iv){
     /* The sub-key to use */
     uint8_t k2[32];
     int i;
-    xchacha_hchacha20(k2, iv, k);
+    ychacha_hchacha20(k2, iv, k);
     ctx->input[0] = 0x61707865;
     ctx->input[1] = 0x3320646e;
     ctx->input[2] = 0x79622d32;
@@ -101,7 +101,7 @@ void xchacha_keysetup(XChaCha_ctx *ctx, const uint8_t *k, uint8_t *iv){
  * @param counter The number to set the counter to
  *
  */
-void xchacha_set_counter(XChaCha_ctx *ctx, uint8_t *counter){
+void ychacha_set_counter(YChaCha_ctx *ctx, uint8_t *counter){
     ctx->input[12] = u8tou32(&counter[0]);
     ctx->input[13] = u8tou32(&counter[4]);
 }
@@ -110,7 +110,7 @@ void xchacha_set_counter(XChaCha_ctx *ctx, uint8_t *counter){
  * @param x The XChaCha20 context with the cipher's state to use
  * @return next byte in the XOR stream
  */
-uint8_t xchacha_next(XChaCha_ctx *ctx){
+uint8_t ychacha_next(YChaCha_ctx *ctx){
     if (ctx->chaptr > 63) {
         ctx->chaptr = 0;
         uint32_t x[16], j[16];
@@ -139,9 +139,9 @@ uint8_t xchacha_next(XChaCha_ctx *ctx){
  * overflow will occur.
  *
  */
-void xchacha_encrypt_bytes(XChaCha_ctx *ctx, const uint8_t *m, uint8_t *c, uint32_t bytes){
+void ychacha_encrypt_bytes(YChaCha_ctx *ctx, const uint8_t *m, uint8_t *c, uint32_t bytes){
     while (bytes--) {
-        *c++ = *m++ ^ xchacha_next(ctx);
+        *c++ = *m++ ^ ychacha_next(ctx);
     }
 }
 
@@ -155,6 +155,6 @@ void xchacha_encrypt_bytes(XChaCha_ctx *ctx, const uint8_t *m, uint8_t *c, uint3
  * overflow will occur.
  *
  */
-void xchacha_decrypt_bytes(XChaCha_ctx *ctx, const uint8_t *c, uint8_t *m, uint32_t bytes){
-    xchacha_encrypt_bytes(ctx,c,m,bytes);
+void ychacha_decrypt_bytes(YChaCha_ctx *ctx, const uint8_t *c, uint8_t *m, uint32_t bytes){
+    ychacha_encrypt_bytes(ctx,c,m,bytes);
 }
