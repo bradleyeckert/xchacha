@@ -366,10 +366,11 @@ int check_sip(void) {
 	uint8_t key[16] = {0,1,2,3,4,5,6,7,8,9,0xa,0xb,0xc,0xd,0xe,0xf};
 	uint8_t plaintext[64];
 	for (i=0; i<64; i++) plaintext[i] = i;
-
+    uint64_t t[2]; // room for 16-byte hash
 	// hash the same plaintext with 0 to 63 lengths
 	for (i=0; i<64; i++) {
-		if (siphash24(plaintext, i, key) != sip_vectors[i]) return 999;
+        siphash24(plaintext, i, (uint8_t *)&t[0], key);
+		if (t[0] != sip_vectors[i]) return 999;
 	}
 	return 0;
 }

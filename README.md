@@ -17,17 +17,14 @@ A larger context structure is used to integrate SipHash keyed HMAC and communica
 
 **More Information**
 
-[IETF XChaCha20 Draft](https://tools.ietf.org/html/draft-arciszewski-xchacha-03)
-
-[Bernstein's ChaCha Web page](http://cr.yp.to/chacha.html)
-
-[Libsodium Documentation](https://libsodium.gitbook.io/doc/advanced/stream_ciphers/xchacha20)
-
-[Crypto++ Documentation](https://www.cryptopp.com/wiki/XChaCha20)
-
-[Wikipedia](https://en.wikipedia.org/wiki/Salsa20)
-
-[XChaCha20 Github repo](https://github.com/spcnvdr/xchacha20)
+- [IETF XChaCha20 Draft](https://tools.ietf.org/html/draft-arciszewski-xchacha-03)
+- [Bernstein's ChaCha Web page](http://cr.yp.to/chacha.html)
+- [Libsodium Documentation](https://libsodium.gitbook.io/doc/advanced/stream_ciphers/xchacha20)
+- [Crypto++ Documentation](https://www.cryptopp.com/wiki/XChaCha20)
+- [Wikipedia Salsa20](https://en.wikipedia.org/wiki/Salsa20)
+- [Wikipedia SipHash](https://en.wikipedia.org/wiki/SipHash)
+- [SipHash: a fast short-input PRF](https://www.aumasson.jp/siphash/siphash.pdf)
+- [Cryptanalysis of SipHash](https://eprint.iacr.org/2014/722.pdf)
 
 **WARNING**
 

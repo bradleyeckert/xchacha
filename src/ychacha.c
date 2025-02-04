@@ -113,13 +113,23 @@ void ychacha_decrypt_bytes(YChaCha_ctx *ctx, const uint8_t *c, uint8_t *m, uint3
     ychacha_encrypt_bytes(ctx,c,m,bytes);
 }
 
+void ychacha_in_place(YChaCha_ctx *ctx, uint8_t *p, uint32_t bytes){
+    while (bytes--) *p++ ^= ychacha_next(ctx);
+}
+
 /* ------------------------------------------------------------------------- */
 
 static void doubleround(uint64_t *v) {
 	DOUBLE_ROUND(v[0],v[1],v[2],v[3]);
 }
 
-uint64_t siphash24(const uint8_t *src, unsigned long src_sz, const uint8_t key[16]) {
+static void vout(uint64_t *v, uint8_t *out) {
+	doubleround(v);
+    uint64_t b = (v[0] ^ v[1]) ^ (v[2] ^ v[3]);
+	memcpy(out, &b, sizeof(uint64_t));
+}
+
+void siphash24(const uint8_t *src, uint32_t src_sz, uint8_t *out, const uint8_t key[16]) {
 	const uint64_t *_key = (uint64_t *)key;
 	uint64_t k0 = (uint64_t)(_key[0]);
 	uint64_t k1 = (uint64_t)(_key[1]);
@@ -130,6 +140,9 @@ uint64_t siphash24(const uint8_t *src, unsigned long src_sz, const uint8_t key[1
 	v[1] = k1 ^ 0x646f72616e646f6dULL;
 	v[2] = k0 ^ 0x6c7967656e657261ULL;
 	v[3] = k1 ^ 0x7465646279746573ULL;
+#if (SIPHASH_OUTPUT_BYTES == 16)
+    v[1] += 0xEE;
+#endif
 
 	uint64_t mi;
 	uint8_t *pt = (uint8_t *)&mi;
@@ -161,9 +174,16 @@ uint64_t siphash24(const uint8_t *src, unsigned long src_sz, const uint8_t key[1
 
 	v[3] ^= b;
 	doubleround(v);
-	v[0] ^= b; v[2] ^= 0xff;
+	v[0] ^= b;
+#if (SIPHASH_OUTPUT_BYTES == 16)
+	v[2] ^= 0xEE;
+#else
+	v[2] ^= 0xFF;
+#endif
 	doubleround(v);
-	doubleround(v);
-	return (v[0] ^ v[1]) ^ (v[2] ^ v[3]);
+	vout(v, out);
+#if (SIPHASH_OUTPUT_BYTES == 16)
+	v[1] ^= 0xDD;
+	vout(v, &out[8]);
+#endif
 }
-

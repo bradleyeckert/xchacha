@@ -10,7 +10,7 @@
 #ifndef _YCHACHA_H_
 #define _YCHACHA_H_
 
-#define YCH_BUFSIZE 256			/* Power of 2, at least 128 */
+#define YCH_BUFSIZE 192
 
 
 /** Key and IV sizes that are supported by YChaCha.
@@ -19,9 +19,9 @@
 #define NAME "YChaCha"
 #define KEYSIZE 256                 /* 256-bits, 32 bytes */
 #define BLOCKSIZE 512               /* 512-bits, 64 bytes */
-#define IVSIZE 256                  /* 256-bits, 24 bytes */
-#define YCHACHA_BLOCKLENGTH 64		/* YChaCha block size in bytes */
-
+#define IVSIZE 256                  /* 256-bits, 32 bytes */
+#define YCH_IV_BYTES 32
+#define SIPHASH_OUTPUT_BYTES 8
 
 /* The following macros are used to obtain exact-width results. */
 #define U8V(v)  ((uint8_t)(v) & (0xFF))
@@ -45,9 +45,6 @@
 	HALF_ROUND(v0,v1,v2,v3,13,16);	\
 	HALF_ROUND(v2,v1,v0,v3,17,21);
 
-#if ((YCH_BUFSIZE-1) & YCH_BUFSIZE)
-#error YCH_BUFSIZE must be an exact power of 2
-#endif
 
 /** ChaCha_ctx is the structure containing the representation of the internal
  *  state of the YChaCha cipher. It includes state for siphash and comms.
@@ -61,6 +58,8 @@ typedef struct
 	uint16_t p;             // number of bytes in buf
 	uint8_t buf[YCH_BUFSIZE];
 } YChaCha_ctx;
+
+typedef int (*rngFn)(uint8_t *dest, unsigned int size);
 
 /* ------------------------------------------------------------------------- */
 
@@ -88,7 +87,6 @@ void ychacha_keysetup(YChaCha_ctx *ctx, const uint8_t *k, uint8_t *iv);
  * on the specification, sometimes the counter is started at 1.
  * @param ctx The XChaCha context to modify
  * @param counter The number to set the counter to
- *
  */
 void ychacha_set_counter(YChaCha_ctx *ctx, uint8_t *counter);
 
@@ -105,34 +103,37 @@ uint8_t ychacha_next(YChaCha_ctx *ctx);
  * @param plaintext The data to be encrypted
  * @param ciphertext A buffer to hold the encrypted data
  * @param msglen Message length in bytes
- *
  */
 void ychacha_encrypt_bytes(YChaCha_ctx* ctx, const uint8_t* plaintext,
 		uint8_t* ciphertext,
 		uint32_t msglen);
 
 
-/** Dencrypt a set of bytes with YChaCha
+/** Decrypt a set of bytes with YChaCha
  * @param ctx The YChaCha context to use
  * @param ciphertext The encrypted data to decrypt
  * @param plaintext A buffer to hold the decrypted data
  * @param msglen Message length in bytes
- *
  */
 void ychacha_decrypt_bytes(YChaCha_ctx* ctx, const uint8_t* ciphertext,
     uint8_t* plaintext,
     uint32_t msglen);
 
+/** Encrypt/decrypt a set of bytes in-place with YChaCha
+ * @param ctx The YChaCha context to use
+ * @param p The data to XOR with the keystream
+ * @param bytes Message length in bytes
+ */
+void ychacha_in_place(YChaCha_ctx *ctx, uint8_t *p, uint32_t bytes);
+
 
 /** Calculate HMAC with SipHash 2.4
  * @param src Input byte array
  * @param src_sz Input length
+ * @param out Hash result, SIPHASH_OUTPUT_BYTES bytes
  * @param key 16-byte key
- * @return 64-bit hash
  */
-uint64_t siphash24(const uint8_t *src, unsigned long src_sz, const uint8_t key[16]);
-
-/* ------------------------------------------------------------------------- */
+void siphash24(const uint8_t *src, uint32_t src_sz, uint8_t *out, const uint8_t key[16]);
 
 
 #endif // _YCHACHA_H_
