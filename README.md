@@ -8,10 +8,8 @@ According to an [IETF draft](https://tools.ietf.org/html/draft-arciszewski-xchac
 
 The small [XChaCha20](https://github.com/spcnvdr/xchacha20) library was not small enough, so I re-factored it for minimum footprint. The target processor is 32-bit such as RISC V or Arm Cortex. Giving the code a little-endian dependency simplified it.
 
-XChaCha20 is (supposedly) immune to power analysis side-channel attacks, unlike AES. Since some industries mandate AES (FIPS-140), the 256-bit IV can be shared with AES-CBC (or AES-GCM) for a kind of belt-and-suspenders double-encryption scheme.
-
 The block dependency of [XChaCha20](https://github.com/spcnvdr/xchacha20) prevented small chunks of keystream from being used without calling `xchacha_keysetup` before each `xchacha_encrypt_bytes`.
-This restriction is removed.
+This restriction is removed. The small abstraction layer in the form of `xc_crypt_setkey` and `xc_crypt_block` should be used to allow the encryption to be swapped out with AES or SM4.
 
 **More Information**
 
