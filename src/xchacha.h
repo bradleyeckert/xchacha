@@ -114,44 +114,20 @@ void xchacha_decrypt_bytes(xChaCha_ctx* ctx, const uint8_t* ciphertext,
     uint32_t msglen);
 
 
-///**
-// * \brief       Encryption/decryption initialization
-// * \param ctx   Encryption/Decryption context
-// * \param key   Key, 32 bytes
-// * \param iv    Initialization vector, 16 bytes
-// */
-//void x_crypt_setkey(crypt_context *ctx, const uint8_t *key, const uint8_t *iv);
-//
-///**
-// * \brief       16-byte block encryption/decryption
-// * \param ctx   Encryption/Decryption context
-// * \param mode  CRYPT_ENCRYPT or CRYPT_DECRYPT
-// * \param in    16-byte buffer holding the input data
-// * \param out   16-byte buffer holding the output data
-// */
-//void x_crypt_block(crypt_context *ctx, int mode, const uint8_t *in, uint8_t *out);
-//
-///**
-// * \brief       HMAC initialization
-// * \param ctx   HMAC context
-// * \param key   Key, 32 bytes
-// */
-//void x_hmac_setkey(hmac_context *ctx, const uint8_t *key);
-//
-///**
-// * \brief       HMAC append byte
-// * \param ctx   HMAC context
-// * \param c     Byte to add to HMAC
-// */
-//void x_hmac_put(hmac_context *ctx, uint8_t c);
-//
-///**
-// * \brief       HMAC append byte
-// * \param ctx   HMAC context
-// * \param c     Byte to add to HMAC
-// * \return      Hash length in bytes
-// */
-//int x_hmac_final(hmac_context *ctx);
+/** Encryption/decryption initialization
+ * @param ctx   Encryption/Decryption context
+ * @param key   Key, 32 bytes
+ * @param iv    Initialization vector, 16 bytes
+ */
+void xc_crypt_setkey(xChaCha_ctx *ctx, const uint8_t *key, const uint8_t *iv);
+
+/** 16-byte block encryption/decryption
+ * @param ctx   Encryption/Decryption context
+ * @param mode  CRYPT_ENCRYPT or CRYPT_DECRYPT
+ * @param in    16-byte buffer holding the input data
+ * @param out   16-byte buffer holding the output data
+ */
+void xc_crypt_block(xChaCha_ctx *ctx, int mode, const uint8_t *in, uint8_t *out);
 
 
 #endif // _YCHACHA_H_

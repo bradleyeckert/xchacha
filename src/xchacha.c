@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include "ychacha.h"
+#include "xchacha.h"
 #include "string.h"
 
 static const uint8_t ind[32] = {
@@ -114,6 +114,16 @@ void xchacha_decrypt_bytes(xChaCha_ctx *ctx, const uint8_t *c, uint8_t *m, uint3
     xchacha_encrypt_bytes(ctx,c,m,bytes);
 }
 
-
 /* ------------------------------------------------------------------------- */
 
+// A more AES/SM4-like API abstraction
+
+void xc_crypt_setkey(xChaCha_ctx *ctx, const uint8_t *key, const uint8_t *iv) {
+    uint8_t nonce[16];
+    memcpy(nonce, iv, 16); // use 128 bits of the possible 192
+    xchacha_keysetup(ctx, key, nonce);
+}
+
+void xc_crypt_block(xChaCha_ctx *ctx, int mode, const uint8_t *in, uint8_t *out) {
+    xchacha_encrypt_bytes(ctx, in, out, 16);
+}
