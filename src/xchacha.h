@@ -1,8 +1,8 @@
 /*
- * Header file for the YChaCha encryption and SipHash keyed hash algorithms
+ * Header file for the xChaCha encryption and SipHash keyed hash algorithms
  * Evolution:
  * Daniel J. Bernstein's ChaCha reference: http://cr.yp.to/chacha.html
- * YChaCha version: https://github.com/spcnvdr/YChaCha
+ * xChaCha version: https://github.com/spcnvdr/xChaCha
  * This version: https://github.com/bradleyeckert/ychacha
  */
 #include <stdint.h>
@@ -10,13 +10,10 @@
 #ifndef _YCHACHA_H_
 #define _YCHACHA_H_
 
-#define YCH_BUFSIZE 192
-
-
-/** Key and IV sizes that are supported by YChaCha.
+/** Key and IV sizes that are supported by xChaCha.
  *  All sizes are in bits.
  */
-#define NAME "YChaCha"
+#define NAME "xChaCha"
 #define KEYSIZE 256                 /* 256-bits, 32 bytes */
 #define BLOCKSIZE 512               /* 512-bits, 64 bytes */
 #define IVSIZE 256                  /* 256-bits, 32 bytes */
@@ -47,30 +44,27 @@
 
 
 /** ChaCha_ctx is the structure containing the representation of the internal
- *  state of the YChaCha cipher. It includes state for siphash and comms.
+ *  state of the xChaCha cipher. Typically 129 to 132 bytes.
  */
 
 typedef struct
-{	uint32_t input[16];		// xchacha state
-    uint64_t hkey[2];		// siphash key (increment after each message)
-    uint8_t chabuf[64];     // xchacha keystream buffer
-    uint8_t chaptr;         // xchacha keystream pointer
-	uint16_t p;             // number of bytes in buf
-	uint8_t buf[YCH_BUFSIZE];
-} YChaCha_ctx;
+{	uint32_t input[16];		// state
+    uint8_t chabuf[64];     // keystream buffer
+    uint8_t chaptr;         // keystream pointer
+} xChaCha_ctx;
 
 typedef int (*rngFn)(uint8_t *dest, unsigned int size);
 
 /* ------------------------------------------------------------------------- */
 
-/** hchacha an intermediary step towards YChaCha based on the
+/** hchacha an intermediary step towards xChaCha based on the
  * construction and security proof used to create XSalsa20.
  * @param out Holds output of hchacha
  * @param in The input to process with hchacha
  * @param k The key to use with hchacha
  *
  */
-void ychacha_hchacha20(uint8_t *out, const uint8_t *in, const uint8_t *k);
+void xchacha_hchacha20(uint8_t *out, const uint8_t *in, const uint8_t *k);
 
 
 /** Set the encryption key and iv to be used with XChaCha
@@ -80,7 +74,7 @@ void ychacha_hchacha20(uint8_t *out, const uint8_t *in, const uint8_t *k);
  * @note It is the user's responsibility to ensure that the key
  * and the iv are of the correct lengths!
  */
-void ychacha_keysetup(YChaCha_ctx *ctx, const uint8_t *k, uint8_t *iv);
+void xchacha_keysetup(xChaCha_ctx *ctx, const uint8_t *k, uint8_t *iv);
 
 
 /** Set the internal counter to a specific number. Depending
@@ -88,52 +82,76 @@ void ychacha_keysetup(YChaCha_ctx *ctx, const uint8_t *k, uint8_t *iv);
  * @param ctx The XChaCha context to modify
  * @param counter The number to set the counter to
  */
-void ychacha_set_counter(YChaCha_ctx *ctx, uint8_t *counter);
+void xchacha_set_counter(xChaCha_ctx *ctx, uint8_t *counter);
 
 
 /** Get the next PRNG byte
- * @param x The YChaCha context with the cipher's state to use
+ * @param x The xChaCha context with the cipher's state to use
  * @return next byte in the XOR stream
  */
-uint8_t ychacha_next(YChaCha_ctx *ctx);
+uint8_t xchacha_next(xChaCha_ctx *ctx);
 
 
-/** Encrypt a set of bytes with YChaCha
- * @param ctx The YChaCha context to use
+/** Encrypt a set of bytes with xChaCha
+ * @param ctx The xChaCha context to use
  * @param plaintext The data to be encrypted
  * @param ciphertext A buffer to hold the encrypted data
  * @param msglen Message length in bytes
  */
-void ychacha_encrypt_bytes(YChaCha_ctx* ctx, const uint8_t* plaintext,
+void xchacha_encrypt_bytes(xChaCha_ctx* ctx, const uint8_t* plaintext,
 		uint8_t* ciphertext,
 		uint32_t msglen);
 
 
-/** Decrypt a set of bytes with YChaCha
- * @param ctx The YChaCha context to use
+/** Decrypt a set of bytes with xChaCha
+ * @param ctx The xChaCha context to use
  * @param ciphertext The encrypted data to decrypt
  * @param plaintext A buffer to hold the decrypted data
  * @param msglen Message length in bytes
  */
-void ychacha_decrypt_bytes(YChaCha_ctx* ctx, const uint8_t* ciphertext,
+void xchacha_decrypt_bytes(xChaCha_ctx* ctx, const uint8_t* ciphertext,
     uint8_t* plaintext,
     uint32_t msglen);
 
-/** Encrypt/decrypt a set of bytes in-place with YChaCha
- * @param ctx The YChaCha context to use
- * @param p The data to XOR with the keystream
- * @param bytes Message length in bytes
- */
-void ychacha_in_place(YChaCha_ctx *ctx, uint8_t *p, uint32_t bytes);
 
-
-/** Calculate HMAC with SipHash 2.4
- * @param src Input byte array
- * @param src_sz Input length
- * @param out Hash result, SIPHASH_OUTPUT_BYTES bytes
- * @param key 16-byte key
- */
-void siphash24(const uint8_t *src, uint32_t src_sz, uint8_t *out, const uint8_t key[16]);
+///**
+// * \brief       Encryption/decryption initialization
+// * \param ctx   Encryption/Decryption context
+// * \param key   Key, 32 bytes
+// * \param iv    Initialization vector, 16 bytes
+// */
+//void x_crypt_setkey(crypt_context *ctx, const uint8_t *key, const uint8_t *iv);
+//
+///**
+// * \brief       16-byte block encryption/decryption
+// * \param ctx   Encryption/Decryption context
+// * \param mode  CRYPT_ENCRYPT or CRYPT_DECRYPT
+// * \param in    16-byte buffer holding the input data
+// * \param out   16-byte buffer holding the output data
+// */
+//void x_crypt_block(crypt_context *ctx, int mode, const uint8_t *in, uint8_t *out);
+//
+///**
+// * \brief       HMAC initialization
+// * \param ctx   HMAC context
+// * \param key   Key, 32 bytes
+// */
+//void x_hmac_setkey(hmac_context *ctx, const uint8_t *key);
+//
+///**
+// * \brief       HMAC append byte
+// * \param ctx   HMAC context
+// * \param c     Byte to add to HMAC
+// */
+//void x_hmac_put(hmac_context *ctx, uint8_t c);
+//
+///**
+// * \brief       HMAC append byte
+// * \param ctx   HMAC context
+// * \param c     Byte to add to HMAC
+// * \return      Hash length in bytes
+// */
+//int x_hmac_final(hmac_context *ctx);
 
 
 #endif // _YCHACHA_H_
