@@ -26,21 +26,6 @@
 
 #define ROTL32(v, n) (U32V((v) << (n)) | ((v) >> (32 - (n))))
 
-#define ROTL64(x, b) (uint64_t)( ((x) << (b)) | ( (x) >> (64 - (b))) )
-
-#define HALF_ROUND(a,b,c,d,s,t)     \
-    a += b; c += d;                 \
-    b = ROTL64(b, s) ^ a;           \
-    d = ROTL64(d, t) ^ c;           \
-    a = ROTL64(a, 32);
-
-#define DOUBLE_ROUND(v0,v1,v2,v3)   \
-    HALF_ROUND(v0,v1,v2,v3,13,16);  \
-    HALF_ROUND(v2,v1,v0,v3,17,21);  \
-    HALF_ROUND(v0,v1,v2,v3,13,16);  \
-    HALF_ROUND(v2,v1,v0,v3,17,21);
-
-
 /** ChaCha_ctx is the structure containing the representation of the internal
  *  state of the xChaCha cipher. Typically 129 to 132 bytes.
  */
