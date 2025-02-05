@@ -17,8 +17,6 @@
 #define KEYSIZE 256                 /* 256-bits, 32 bytes */
 #define BLOCKSIZE 512               /* 512-bits, 64 bytes */
 #define IVSIZE 256                  /* 256-bits, 32 bytes */
-#define YCH_IV_BYTES 32
-#define SIPHASH_OUTPUT_BYTES 8
 
 /* The following macros are used to obtain exact-width results. */
 #define U8V(v)  ((uint8_t)(v) & (0xFF))
@@ -30,17 +28,17 @@
 
 #define ROTL64(x, b) (uint64_t)( ((x) << (b)) | ( (x) >> (64 - (b))) )
 
-#define HALF_ROUND(a,b,c,d,s,t)		\
-	a += b; c += d;					\
-	b = ROTL64(b, s) ^ a;			\
-	d = ROTL64(d, t) ^ c;			\
-	a = ROTL64(a, 32);
+#define HALF_ROUND(a,b,c,d,s,t)     \
+    a += b; c += d;                 \
+    b = ROTL64(b, s) ^ a;           \
+    d = ROTL64(d, t) ^ c;           \
+    a = ROTL64(a, 32);
 
-#define DOUBLE_ROUND(v0,v1,v2,v3)	\
-	HALF_ROUND(v0,v1,v2,v3,13,16);	\
-	HALF_ROUND(v2,v1,v0,v3,17,21);	\
-	HALF_ROUND(v0,v1,v2,v3,13,16);	\
-	HALF_ROUND(v2,v1,v0,v3,17,21);
+#define DOUBLE_ROUND(v0,v1,v2,v3)   \
+    HALF_ROUND(v0,v1,v2,v3,13,16);  \
+    HALF_ROUND(v2,v1,v0,v3,17,21);  \
+    HALF_ROUND(v0,v1,v2,v3,13,16);  \
+    HALF_ROUND(v2,v1,v0,v3,17,21);
 
 
 /** ChaCha_ctx is the structure containing the representation of the internal
@@ -48,7 +46,7 @@
  */
 
 typedef struct
-{   uint32_t input[16];		// state
+{   uint32_t input[16];     // state
     uint8_t chabuf[64];     // keystream buffer
     uint8_t chaptr;         // keystream pointer
 } xChaCha_ctx;
@@ -99,8 +97,8 @@ uint8_t xchacha_next(xChaCha_ctx *ctx);
  * @param msglen Message length in bytes
  */
 void xchacha_encrypt_bytes(xChaCha_ctx* ctx, const uint8_t* plaintext,
-		uint8_t* ciphertext,
-		uint32_t msglen);
+        uint8_t* ciphertext,
+        uint32_t msglen);
 
 
 /** Decrypt a set of bytes with xChaCha

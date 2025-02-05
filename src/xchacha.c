@@ -1,15 +1,11 @@
-/* https://github.com/bradleyeckert/ychacha
+/* https://github.com/bradleyeckert/xchacha
  *
- * A small cryptographic library that implements a version of the YChaCha
- * stream cipher modified to accept a 256-bit IV. The last 64 bits of IV
- * set the counter.
+ * A highly refactored version of https://github.com/spcnvdr/xchacha20
  */
 
-#include <stdio.h>
-#include <stdlib.h>
 #include <stdint.h>
+#include <string.h>
 #include "xchacha.h"
-#include "string.h"
 
 static const uint8_t ind[32] = {
     0, 4, 8, 12, 1, 5, 9, 13, 2, 6, 10, 14, 3, 7, 11, 15,
