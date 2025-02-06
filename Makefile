@@ -10,9 +10,9 @@ LFLAGS = -Wall
 
 SRCDIR	= src
 
-SOURCES	:= $(wildcard $(SRCDIR)/*.c)
-INCLUDES	:= $(wildcard $(SRCDIR)/*.h))
-OBJECTS	:= $(SOURCES:$(SRCDIR)/%.c=$(SRCDIR)/%.o)
+SOURCES  := $(wildcard $(SRCDIR)/src/*.c)
+INCLUDES := $(wildcard $(SRCDIR)/src/*.h))
+OBJECTS  := $(SOURCES:$(SRCDIR)/src/%.c=$(SRCDIR)/src/%.o)
 
 .PHONY: all clean remove
 all: ${TARGET}
@@ -20,7 +20,7 @@ all: ${TARGET}
 $(TARGET): $(OBJECTS)
 	@$(CC) -o $@ $(LFLAGS) $(OBJECTS)
 
-$(OBJECTS): $(SRCDIR)/%.o : $(SRCDIR)/%.c
+$(OBJECTS): $(SRCDIR)/src/%.o : $(SRCDIR)/src/%.c
 	@$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
