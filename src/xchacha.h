@@ -36,8 +36,6 @@ typedef struct
     uint8_t chaptr;         // keystream pointer
 } xChaCha_ctx;
 
-typedef int (*rngFn)(uint8_t *dest, unsigned int size);
-
 /* ------------------------------------------------------------------------- */
 
 /** hchacha an intermediary step towards xChaCha based on the
