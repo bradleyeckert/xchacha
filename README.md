@@ -8,7 +8,7 @@ According to an [IETF draft](https://tools.ietf.org/html/draft-arciszewski-xchac
 
 The small [XChaCha20](https://github.com/spcnvdr/xchacha20) library was not small enough, so I re-factored it for minimum footprint. The target processor is 32-bit such as RISC V or Arm Cortex. Giving the code a little-endian dependency simplified it.
 
-The block dependency of [XChaCha20](https://github.com/spcnvdr/xchacha20) prevented small chunks of keystream from being used without calling `xchacha_keysetup` before each `xchacha_encrypt_bytes`.
+The block dependency of [XChaCha20](https://github.com/spcnvdr/xchacha20) prevented small chunks of keystream from being used without calling `xchacha_init` before each `xchacha_encrypt_bytes`.
 This restriction is removed. The small abstraction layer in the form of `xc_crypt_setkey` and `xc_crypt_block` should be used to allow the encryption to be swapped out with AES or SM4.
 
 **More Information**
@@ -41,7 +41,7 @@ Create a XChaCha context
 Set up the 256-bit encryption key and the 256-bit nonce to be used.
 
 ```C
-    xchacha_keysetup(&ctx, key, nonce);
+    xchacha_init(&ctx, key, nonce);
 ```
 
 Then use xchacha_encrypt_bytes or xchacha_encrypt_blocks to encrypt data

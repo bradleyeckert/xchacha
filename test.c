@@ -7,7 +7,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
-#include "xchacha.h"
+#include "./src/xchacha.h"
 
 
 /** Calculate and compare the newest test vectors from the IETF
@@ -130,7 +130,7 @@ int check_second_ietf(void){
         return(-1);
     }
 
-    xchacha_keysetup(&ctx, key, iv);
+    xchacha_init(&ctx, key, iv);
 
     /*This version of the IETF draft initializes their counter to 1
     * instead of 0 */
@@ -264,7 +264,7 @@ int check_ietf(void){
         return(-1);
     }
 
-    xchacha_keysetup(&ctx, key, iv);
+    xchacha_init(&ctx, key, iv);
     xchacha_encrypt_bytes(&ctx, plaintext, buffer, 304);
 
     /* Make sure our ciphertext matches */
@@ -324,7 +324,7 @@ int check_cpp(void){
         return(-1);
     }
 
-    xchacha_keysetup(&ctx, key, iv);
+    xchacha_init(&ctx, key, iv);
 
     /* Crypto++ initializes their counter to 1 instead of 0 */
     xchacha_set_counter(&ctx, counter);

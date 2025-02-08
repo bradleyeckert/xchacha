@@ -57,7 +57,7 @@ void xchacha_hchacha20(uint8_t *out, const uint8_t *in, const uint8_t *k){
     }
 }
 
-void xchacha_keysetup(xChaCha_ctx *ctx, const uint8_t *k, uint8_t *iv){
+void xchacha_init(xChaCha_ctx *ctx, const uint8_t *k, uint8_t *iv){
     /* The sub-key to use */
     uint8_t k2[32];
     int i;
@@ -114,13 +114,19 @@ void xchacha_decrypt_bytes(xChaCha_ctx *ctx, const uint8_t *c, uint8_t *m, uint3
 
 // A more AES/SM4-like API abstraction
 
-void xc_crypt_setkey(xChaCha_ctx *ctx, const uint8_t *key, const uint8_t *iv) {
+void xc_crypt_init(xChaCha_ctx *ctx, const uint8_t *key, const uint8_t *iv) {
     uint8_t nonce[24];
     memset(nonce, 0, 24);
     memcpy(nonce, iv, 16); // use 128 bits of the possible 192
-    xchacha_keysetup(ctx, key, nonce);
+    xchacha_init(ctx, key, nonce);
+}
+void xc_crypt_init_g(size_t *ctx, const uint8_t *key, const uint8_t *iv) {
+    xc_crypt_init((void *)ctx, key, iv);
 }
 
-void xc_crypt_block(xChaCha_ctx *ctx, int mode, const uint8_t *in, uint8_t *out) {
+void xc_crypt_block(xChaCha_ctx *ctx, const uint8_t *in, uint8_t *out, int mode) {
     xchacha_encrypt_bytes(ctx, in, out, 16);
+}
+void xc_crypt_block_g(size_t *ctx, const uint8_t *in, uint8_t *out, int mode) {
+    xc_crypt_block((void *)ctx, in, out, mode);
 }
