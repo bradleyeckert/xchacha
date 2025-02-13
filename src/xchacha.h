@@ -34,6 +34,7 @@ typedef struct
 {   uint32_t input[16];     // state
     uint8_t chabuf[64];     // keystream buffer
     uint8_t chaptr;         // keystream pointer
+    uint8_t blox;           // block counter
 } xChaCha_ctx;
 
 /* ------------------------------------------------------------------------- */

@@ -74,6 +74,7 @@ void xchacha_init(xChaCha_ctx *ctx, const uint8_t *k, uint8_t *iv){
     ctx->input[14] = u8tou32(iv + 16);
     ctx->input[15] = u8tou32(iv + 20);
     ctx->chaptr = 64;
+    ctx->blox = 0;
 }
 
 void xchacha_set_counter(xChaCha_ctx *ctx, uint8_t *counter){
@@ -125,6 +126,7 @@ void xc_crypt_init_g(size_t *ctx, const uint8_t *key, const uint8_t *iv) {
 }
 
 void xc_crypt_block(xChaCha_ctx *ctx, const uint8_t *in, uint8_t *out, int mode) {
+    ctx->blox++;
     xchacha_encrypt_bytes(ctx, in, out, 16);
 }
 void xc_crypt_block_g(size_t *ctx, const uint8_t *in, uint8_t *out, int mode) {
