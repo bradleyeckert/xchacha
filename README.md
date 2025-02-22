@@ -9,7 +9,7 @@ According to an [IETF draft](https://tools.ietf.org/html/draft-arciszewski-xchac
 The small [spcnvdr/XChaCha20](https://github.com/spcnvdr/xchacha20) library was not small enough, so I re-factored it for minimum footprint. The target processor is 32-bit such as RISC V or Arm Cortex. Giving the code a little-endian dependency simplified it.
 
 The block dependency of [spcnvdr/XChaCha20](https://github.com/spcnvdr/xchacha20) prevented small chunks of keystream from being used without calling `xchacha_init` before each `xchacha_encrypt_bytes`.
-This restriction is removed. The small abstraction layer in the form of `xc_crypt_setkey` and `xc_crypt_block` facilitate swappeing out encryption with AES or SM4.
+This restriction is removed. The small abstraction layer in the form of `xc_crypt_setkey` and `xc_crypt_block` facilitate swapping out encryption with AES or SM4.
 
 **More Information**
 
