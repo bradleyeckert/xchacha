@@ -76,6 +76,6 @@ is wrong with the library and you will see this output:
 
 **Is it secure?**
 
-NIST recommends cryptography such as (e.g., FIPS 140-3, NIST Suite B), or equivalent-strength cryptographic protection that are expected to be considered cryptographically strong throughout the service life of the device.
+NIST recommends cryptography such as (e.g., FIPS 140-3, NIST Suite B), or equivalent-strength cryptographic protection, that are expected to be considered cryptographically strong throughout the service life of the device.
 
 XChaCha20 is considered highly secure and may be less susceptible to certain side-channel [attacks](https://eprint.iacr.org/2014/899.pdf) compared to AES. Google, Cloudflare, and Nordstream use XChaCha20 encryption. In terms of achieving the goals of AES, XChaCha20 is lower-risk because it contains fewer hidden surprises.
